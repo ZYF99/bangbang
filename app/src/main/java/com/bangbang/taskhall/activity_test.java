@@ -1,27 +1,8 @@
-package com.bangbang.home;
+package com.bangbang.taskhall;
 
-import android.os.Handler;
-import android.os.Message;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.Toast;
-import com.bangbang.R;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.protocol.HTTP;
-import org.apache.http.util.EntityUtils;
-import java.util.ArrayList;
-import java.util.List;
 
+/*
 public class MainActivity extends AppCompatActivity {
-
-
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -86,4 +67,6 @@ public class MainActivity extends AppCompatActivity {
         }
         return result;
     }
+
 }
+*/
