@@ -1,8 +1,6 @@
 package com.bangbang.drawlayout.task_released;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.widget.RecyclerView;
@@ -10,14 +8,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.bangbang.R;
 import com.bangbang.bean.Task;
-import com.bangbang.utils.MemoryCacheUtils;
-
 import org.apache.http.HttpResponse;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
@@ -25,14 +19,6 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,7 +37,8 @@ public class xRecAdapter_task_released extends RecyclerView.Adapter<xRecAdapter_
         TextView textTime;
         TextView textTask;
         TextView textState;
-
+        TextView textBusiness;
+        TextView textAddrss;
         public MyViewHolder(View itemView) {
             super(itemView);
             this.textPeople=itemView.findViewById(R.id.item_people);
@@ -59,6 +46,8 @@ public class xRecAdapter_task_released extends RecyclerView.Adapter<xRecAdapter_
             this.textTime=itemView.findViewById(R.id.item_time);
             this.textTask=itemView.findViewById(R.id.item_task);
             this.textState=itemView.findViewById(R.id.item_state);
+            this.textBusiness=itemView.findViewById(R.id.item_business);
+            this.textAddrss=itemView.findViewById(R.id.item_address);
         }
     }
     public xRecAdapter_task_released(Context context, List<Task>task_releaseds) {
@@ -76,11 +65,11 @@ public class xRecAdapter_task_released extends RecyclerView.Adapter<xRecAdapter_
     public void onBindViewHolder(final MyViewHolder holder, int position) {
         //final String icon_url = task_releaseds.get(position);
         final int id = task_releaseds.get(position).getId();
-        final String account = task_releaseds.get(position).getAccoount();
+        //final String name_send = task_releaseds.get(position).getName_send();
+        final String name_received = task_releaseds.get(position).getName_received();
         final String business = task_releaseds.get(position).getBusiness();
         final String address = task_releaseds.get(position).getAddress();
         final String time = task_releaseds.get(position).getTime();
-        Log.d("SSSSSSSS", time);
         final String money = "￥"+task_releaseds.get(position).getMoney()+"";
         final String task = task_releaseds.get(position).getTask();
         //final String state = task_releaseds.get(position).getState();
@@ -88,7 +77,9 @@ public class xRecAdapter_task_released extends RecyclerView.Adapter<xRecAdapter_
         holder.textState.setText("等待抢单");
         holder.textTask.setText(task);
         holder.textTime.setText(time);
-        holder.textPeople.setText(account);
+        holder.textPeople.setText(name_received);
+        holder.textBusiness.setText(business);
+        holder.textAddrss.setText(address);
         sendPost(id,holder.textState);
     }
     @Override

@@ -6,8 +6,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Toast;
-
 import com.bangbang.R;
 import com.bangbang.bean.Task;
 import com.jcodecraeer.xrecyclerview.ProgressStyle;
@@ -33,9 +34,6 @@ public class task_released extends AppCompatActivity {
             super.handleMessage(msg);
         }
     };
-
-
-
     String connectURL = "http://10.0.2.2/bangbang/bangbang_getTask_released.php";
     XRecyclerView recyclerView = null;
     xRecAdapter_task_released xRecAdapter_task_released ;
@@ -172,12 +170,15 @@ public class task_released extends AppCompatActivity {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 task_releaseds.add(new Task(jsonObject.getInt("id"),
                         jsonObject.getString("business"),
-                        jsonObject.getString("account"),
+                        jsonObject.getString("account_send"),
+                        jsonObject.getString("account_received"),
                         jsonObject.getString("task"),
                         jsonObject.getInt("money"),
                         jsonObject.getString("address"),
                         jsonObject.getString("state"),
-                        jsonObject.getString("time")
+                        jsonObject.getString("time"),
+                        jsonObject.getString("name_send"),
+                        jsonObject.getString("name_received")
                         ));
             }
         } catch (JSONException e) {
