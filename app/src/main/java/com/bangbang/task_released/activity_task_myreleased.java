@@ -1,4 +1,4 @@
-package com.bangbang.drawlayout.task_released;
+package com.bangbang.task_released;
 
 import android.os.Handler;
 import android.os.Message;
@@ -6,8 +6,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Toast;
 import com.bangbang.R;
 import com.bangbang.bean.Task;
@@ -25,8 +23,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
+import com.bangbang.utils.animation_rec_item;
 
-public class task_released extends AppCompatActivity {
+public class activity_task_myreleased extends AppCompatActivity {
 
     private Handler mHandler = new Handler() {
         @Override
@@ -34,21 +33,18 @@ public class task_released extends AppCompatActivity {
             super.handleMessage(msg);
         }
     };
-    String connectURL = "http://10.0.2.2/bangbang/bangbang_getTask_released.php";
+    Thread thread_getState = null;
     XRecyclerView recyclerView = null;
-    xRecAdapter_task_released xRecAdapter_task_released ;
+    xRecAdapter_task_myreleased xRecAdapter_task_released ;
     boolean havedata = true;
     int addStart = 0;
     List<Task>task_releaseds = new ArrayList <Task>();
-
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task_released);
 
     }
-
     @Override
     public void onResume() {
         super.onResume();
@@ -60,12 +56,12 @@ public class task_released extends AppCompatActivity {
         initRec();
     }
     void initRec(){
-        LinearLayoutManager xLinearLayoutManager = new LinearLayoutManager(task_released.this);
+        LinearLayoutManager xLinearLayoutManager = new LinearLayoutManager(activity_task_myreleased.this);
         xLinearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setRefreshProgressStyle(ProgressStyle.BallRotate); //设定下拉刷新样式
         recyclerView.setLoadingMoreProgressStyle(ProgressStyle.BallRotate);//设定上拉加载样式
         recyclerView.setLayoutManager(xLinearLayoutManager);
-        xRecAdapter_task_released = new xRecAdapter_task_released(task_released.this,task_releaseds);
+        xRecAdapter_task_released = new xRecAdapter_task_myreleased(activity_task_myreleased.this,task_releaseds);
         recyclerView.setAdapter(xRecAdapter_task_released);
         //recyclerView.setArrowImageView(R.drawable.qwe);     //设定下拉刷新显示图片（不必须）
         initData();   //初始化数据
@@ -83,7 +79,10 @@ public class task_released extends AppCompatActivity {
         });
     }
     void addData() {
-        new Thread(new Runnable() {
+        if(thread_getState!=null) {
+            thread_getState.interrupt();
+        }
+        thread_getState = new Thread(new Runnable() {
             @Override
             public void run() {
                 Log.d("BEFORE", addStart+"");
@@ -93,7 +92,8 @@ public class task_released extends AppCompatActivity {
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            xRecAdapter_task_released.notifyDataSetChanged();
+                            animation_rec_item.runLayoutAnimation(recyclerView);
+                            //xRecAdapter_task_released.notifyDataSetChanged();
                             recyclerView.loadMoreComplete();    //加载数据完成（取消加载动画）
                         }
                     });
@@ -108,31 +108,39 @@ public class task_released extends AppCompatActivity {
                     });
                 }
             }
-        }).start();
+        });
+
+        thread_getState.start();
+
 
     }
     void initData() {
         task_releaseds.clear();
         xRecAdapter_task_released.notifyDataSetChanged();
-        new Thread(new Runnable() {
+        if(thread_getState!=null) {
+            thread_getState.interrupt();
+        }
+        thread_getState = new Thread(new Runnable() {
             @Override
             public void run() {
                 parseJSON(getdutyList(0,10));
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        xRecAdapter_task_released.notifyDataSetChanged();
+                        animation_rec_item.runLayoutAnimation(recyclerView);
+                        //xRecAdapter_task_released.notifyDataSetChanged();
                         recyclerView.refreshComplete();     //刷新数据完成（取消刷新动画）
                     }
                 });
                 addStart = 10;
             }
-        }).start();
+        });
+        thread_getState.start();
     }
     String getdutyList(int start,int end){
         String result = ""; //用来取得返回的String；
         //发送post请求
-        HttpPost httpRequest = new HttpPost(connectURL);
+        HttpPost httpRequest = new HttpPost("http://10.0.2.2/bangbang/bangbang_getTask_released.php");
         //Post运作传送变数必须用NameValuePair[]阵列储存
         try {
             //发出HTTP请求
@@ -154,7 +162,7 @@ public class task_released extends AppCompatActivity {
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    Toast.makeText(task_released.this, "网络出错",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(activity_task_myreleased.this, "网络出错",Toast.LENGTH_SHORT).show();
                 }
             });
             e.printStackTrace();
@@ -186,7 +194,7 @@ public class task_released extends AppCompatActivity {
                 @Override
                 public void run() {
                     havedata = false;
-                    Toast.makeText(task_released.this, "下面没有啦！", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(activity_task_myreleased.this, "下面没有啦！", Toast.LENGTH_SHORT).show();
                 }
             });
         } catch (Exception e) {

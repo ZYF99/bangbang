@@ -12,8 +12,7 @@ public class Task {
     String time = "";
     String name_send = "";
     String name_received = "";
-    public Task(int id ,String business,String account_send,String accoount_received,
-                String task,int money,String address,String state,String time,String name_send,String name_received){
+    public Task(int id ,String business,String account_send,String accoount_received, String task,int money,String address,String state,String time,String name_send,String name_received){
         this.id = id;
         this.business = business;
         this.accoount_send =account_send;

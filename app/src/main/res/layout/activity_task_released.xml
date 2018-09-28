@@ -4,11 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".drawlayout.task_released.task_released">
+    tools:context=".task_released.activity_task_myreleased">
     <com.jcodecraeer.xrecyclerview.XRecyclerView
         android:id="@+id/xrec"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layoutAnimation="@anim/layout_animation_from_right"
         android:background="#90e1e1e1"
         android:visibility="visible" />
 </RelativeLayout>

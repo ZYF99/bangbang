@@ -1,4 +1,4 @@
-package com.bangbang.drawlayout.task_released;
+package com.bangbang.task_released;
 
 import android.content.Context;
 import android.os.Handler;
@@ -22,7 +22,7 @@ import org.apache.http.util.EntityUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-public class xRecAdapter_task_released extends RecyclerView.Adapter<xRecAdapter_task_released.MyViewHolder> {
+public class xRecAdapter_task_myreleased extends RecyclerView.Adapter<xRecAdapter_task_myreleased.MyViewHolder> {
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -50,7 +50,7 @@ public class xRecAdapter_task_released extends RecyclerView.Adapter<xRecAdapter_
             this.textAddrss=itemView.findViewById(R.id.item_address);
         }
     }
-    public xRecAdapter_task_released(Context context, List<Task>task_releaseds) {
+    public xRecAdapter_task_myreleased(Context context, List<Task>task_releaseds) {
         super();
         this.context =context;
         this.task_releaseds = task_releaseds;
