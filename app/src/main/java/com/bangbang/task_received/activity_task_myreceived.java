@@ -1,4 +1,4 @@
-package com.bangbang.task_released;
+package com.bangbang.task_received;
 
 import android.os.Handler;
 import android.os.Message;
@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import com.bangbang.utils.animation_rec_item;
 
-public class activity_task_myreleased extends AppCompatActivity {
+public class activity_task_myreceived extends AppCompatActivity {
 
     private Handler mHandler = new Handler() {
         @Override
@@ -35,8 +35,8 @@ public class activity_task_myreleased extends AppCompatActivity {
     };
     Thread thread_getState = null;
     XRecyclerView recyclerView = null;
+    xRecAdapter_task_myreceived xRecAdapter_task_received ;
     String account = "994318935";
-    xRecAdapter_task_myreleased xRecAdapter_task_released ;
     boolean havedata = true;
     int addStart = 0;
     List<Task>task_releaseds = new ArrayList <Task>();
@@ -57,13 +57,13 @@ public class activity_task_myreleased extends AppCompatActivity {
         initRec();
     }
     void initRec(){
-        LinearLayoutManager xLinearLayoutManager = new LinearLayoutManager(activity_task_myreleased.this);
+        LinearLayoutManager xLinearLayoutManager = new LinearLayoutManager(activity_task_myreceived.this);
         xLinearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setRefreshProgressStyle(ProgressStyle.BallRotate); //设定下拉刷新样式
         recyclerView.setLoadingMoreProgressStyle(ProgressStyle.BallRotate);//设定上拉加载样式
         recyclerView.setLayoutManager(xLinearLayoutManager);
-        xRecAdapter_task_released = new xRecAdapter_task_myreleased(activity_task_myreleased.this,task_releaseds);
-        recyclerView.setAdapter(xRecAdapter_task_released);
+        xRecAdapter_task_received = new xRecAdapter_task_myreceived(activity_task_myreceived.this,task_releaseds);
+        recyclerView.setAdapter(xRecAdapter_task_received);
         //recyclerView.setArrowImageView(R.drawable.qwe);     //设定下拉刷新显示图片（不必须）
         initData();   //初始化数据
         recyclerView.setLoadingListener(new XRecyclerView.LoadingListener() {
@@ -117,7 +117,7 @@ public class activity_task_myreleased extends AppCompatActivity {
     }
     void initData() {
         task_releaseds.clear();
-        xRecAdapter_task_released.notifyDataSetChanged();
+        xRecAdapter_task_received.notifyDataSetChanged();
         if(thread_getState!=null) {
             thread_getState.interrupt();
         }
@@ -141,7 +141,7 @@ public class activity_task_myreleased extends AppCompatActivity {
     String getdutyList(int start,int end){
         String result = ""; //用来取得返回的String；
         //发送post请求
-        HttpPost httpRequest = new HttpPost("http://132.232.93.93/bangbang/bangbang_getTask_released.php");
+        HttpPost httpRequest = new HttpPost("http://132.232.93.93/bangbang/bangbang_getTask_received.php");
         //Post运作传送变数必须用NameValuePair[]阵列储存
         try {
             //发出HTTP请求
@@ -164,7 +164,7 @@ public class activity_task_myreleased extends AppCompatActivity {
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    Toast.makeText(activity_task_myreleased.this, "网络出错",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(activity_task_myreceived.this, "网络出错",Toast.LENGTH_SHORT).show();
                 }
             });
             e.printStackTrace();
@@ -189,14 +189,14 @@ public class activity_task_myreleased extends AppCompatActivity {
                         jsonObject.getString("time"),
                         jsonObject.getString("name_send"),
                         jsonObject.getString("name_received")
-                        ));
+                ));
             }
         } catch (JSONException e) {
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
                     havedata = false;
-                    Toast.makeText(activity_task_myreleased.this, "下面没有啦！", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(activity_task_myreceived.this, "下面没有啦！", Toast.LENGTH_SHORT).show();
                 }
             });
         } catch (Exception e) {

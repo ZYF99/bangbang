@@ -1,4 +1,4 @@
-package com.bangbang.task_released;
+package com.bangbang.task_received;
 
 import android.content.Context;
 import android.os.Handler;
@@ -22,7 +22,7 @@ import org.apache.http.util.EntityUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-public class xRecAdapter_task_myreleased extends RecyclerView.Adapter<xRecAdapter_task_myreleased.MyViewHolder> {
+public class xRecAdapter_task_myreceived extends RecyclerView.Adapter<xRecAdapter_task_myreceived.MyViewHolder> {
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -30,7 +30,7 @@ public class xRecAdapter_task_myreleased extends RecyclerView.Adapter<xRecAdapte
         }
     };
     static Context context;
-    List<Task>task_releaseds = new ArrayList <Task>();
+    List<Task>task_receiveds = new ArrayList <Task>();
     static class MyViewHolder extends RecyclerView.ViewHolder{
         TextView textMoney;
         TextView textPeople;
@@ -50,10 +50,10 @@ public class xRecAdapter_task_myreleased extends RecyclerView.Adapter<xRecAdapte
             this.textAddrss=itemView.findViewById(R.id.item_address);
         }
     }
-    public xRecAdapter_task_myreleased(Context context, List<Task>task_releaseds) {
+    public xRecAdapter_task_myreceived(Context context, List<Task>task_receiveds) {
         super();
         this.context =context;
-        this.task_releaseds = task_releaseds;
+        this.task_receiveds = task_receiveds;
     }
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -64,14 +64,14 @@ public class xRecAdapter_task_myreleased extends RecyclerView.Adapter<xRecAdapte
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
         //final String icon_url = task_releaseds.get(position);
-        final int id = task_releaseds.get(position).getId();
+        final int id = task_receiveds.get(position).getId();
         //final String name_send = task_releaseds.get(position).getName_send();
-        final String name_received = task_releaseds.get(position).getName_received();
-        final String business = task_releaseds.get(position).getBusiness();
-        final String address = task_releaseds.get(position).getAddress();
-        final String time = task_releaseds.get(position).getTime();
-        final String money = "￥"+task_releaseds.get(position).getMoney()+"";
-        final String task = task_releaseds.get(position).getTask();
+        final String name_received = task_receiveds.get(position).getName_received();
+        final String business = task_receiveds.get(position).getBusiness();
+        final String address = task_receiveds.get(position).getAddress();
+        final String time = task_receiveds.get(position).getTime();
+        final String money = "￥"+task_receiveds.get(position).getMoney()+"";
+        final String task = task_receiveds.get(position).getTask();
         //final String state = task_releaseds.get(position).getState();
         holder.textMoney.setText(money);
         holder.textState.setText("等待抢单");
@@ -84,8 +84,9 @@ public class xRecAdapter_task_myreleased extends RecyclerView.Adapter<xRecAdapte
     }
     @Override
     public int getItemCount() {
-        return task_releaseds.size();
+        return task_receiveds.size();
     }
+
     void sendPost(final int takID, final TextView text_state) {
         new Thread(new Runnable() {
             @Override

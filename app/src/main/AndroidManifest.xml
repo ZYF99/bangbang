@@ -22,8 +22,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".task_released.activity_task_myreleased">
-        </activity>
+        <activity android:name=".task_released.activity_task_myreleased"></activity>
+        <activity android:name=".task_received.activity_task_myreceived"></activity>
     </application>
 
 </manifest>
