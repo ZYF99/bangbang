@@ -1,5 +1,6 @@
 package com.bangbang.task_released;
 
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
@@ -35,7 +36,7 @@ public class activity_task_myreleased extends AppCompatActivity {
     };
     Thread thread_getState = null;
     XRecyclerView recyclerView = null;
-    String account = "994318935";
+    String account = "";
     xRecAdapter_task_myreleased xRecAdapter_task_released ;
     boolean havedata = true;
     int addStart = 0;
@@ -44,6 +45,8 @@ public class activity_task_myreleased extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task_released);
+        Intent intent = getIntent();
+        account = intent.getStringExtra("account");
 
     }
     @Override
@@ -88,7 +91,7 @@ public class activity_task_myreleased extends AppCompatActivity {
             public void run() {
                 Log.d("BEFORE", addStart+"");
                 parseJSON(getdutyList(addStart,addStart+10));
-                if(havedata) {
+                if(havedata&&!parseJSON(getdutyList(addStart,addStart+10)).equals("nodata")) {
                     addStart += 10;
                     mHandler.post(new Runnable() {
                         @Override
@@ -171,7 +174,7 @@ public class activity_task_myreleased extends AppCompatActivity {
         }
         return result;
     }
-    void parseJSON(String jsonData){
+    String parseJSON(String jsonData){
         Log.d("JSON" ,jsonData);
         try {
             JSONArray jsonArray = new JSONArray(jsonData);
@@ -199,8 +202,10 @@ public class activity_task_myreleased extends AppCompatActivity {
                     Toast.makeText(activity_task_myreleased.this, "下面没有啦！", Toast.LENGTH_SHORT).show();
                 }
             });
+            return "nodata";
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return "success";
     }
 }

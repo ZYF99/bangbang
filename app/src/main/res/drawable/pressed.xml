@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 弧度为10的按钮 -->
+<!-- 弧度为10的按钮 -->
+<!-- 弧度为10的按钮 -->
+<!-- 弧度为10的按钮 -->
+
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="#73315275"></solid>
+    <!-- 矩形的圆角弧度 -->
+    <corners android:radius="10dp" />
+</shape>
+    <!-- 弧度为10的按钮 -->
+    <!-- 弧度为10的按钮 -->
+    <!-- 弧度为10的按钮 -->
+    <!-- 弧度为10的按钮 -->

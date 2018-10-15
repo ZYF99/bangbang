@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<!-- 弧度为10的按钮 -->
+<!-- 弧度为10的按钮 -->
+<!-- 弧度为10的按钮 -->
+<!-- 弧度为10的按钮 -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/normal" android:state_pressed="false"/>
+    <item android:drawable="@drawable/pressed" android:state_pressed="true"/>
+</selector>
+    <!-- 弧度为10的按钮 -->
+    <!-- 弧度为10的按钮 -->
+    <!-- 弧度为10的按钮 -->
+    <!-- 弧度为10的按钮 -->

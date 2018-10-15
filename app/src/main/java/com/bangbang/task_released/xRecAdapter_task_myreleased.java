@@ -80,57 +80,11 @@ public class xRecAdapter_task_myreleased extends RecyclerView.Adapter<xRecAdapte
         holder.textPeople.setText(name_received);
         holder.textBusiness.setText(business);
         holder.textAddrss.setText(address);
-        sendPost(id,holder.textState);
     }
     @Override
     public int getItemCount() {
         return task_releaseds.size();
     }
-    void sendPost(final int takID, final TextView text_state) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                String result = getDutyState(takID);
-                Log.d("RESULT", result);
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        text_state.setText("已被抢单");
-                    }
-                });
-            }
-        }).start();
-    }
-    String getDutyState(int taskID) {
-        String result = ""; //用来取得返回的String；
-        //发送post请求
-        HttpPost httpRequest = new HttpPost("http://132.232.93.93/bangbang/bangbang_getstate.php");
-        //Post运作传送变数必须用NameValuePair[]阵列储存
-        try {
-            //发出HTTP请求
-            Log.d("*****获取任务状态连接*****", "在发送请求");
-            List params = new ArrayList();
-            params.add(new BasicNameValuePair("taskID", taskID + ""));
-            httpRequest.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
-            //取得HTTP response
-            HttpResponse httpResponse = new DefaultHttpClient().execute(httpRequest);
-            //若状态码为200则请求成功，取到返回数据
-            Log.d("连接值", String.valueOf(httpResponse.getStatusLine().getStatusCode()));
-            if (httpResponse.getStatusLine().getStatusCode() == 200) {
-                //取出字符串
-                Log.d("请求连接", "连接成功");
-                Log.d("获取任务状态中", "获取数据中");
-                result = new String(EntityUtils.toString(httpResponse.getEntity(), "utf8"));
-            }
-        } catch (Exception e) {
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(context, "网络出错", Toast.LENGTH_SHORT).show();
-                }
-            });
-            e.printStackTrace();
-        }
-        return result;
-    }
+
+
 }

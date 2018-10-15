@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:ver="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/bg_register"
+    tools:context="com.bangbang.register.activity_register_getphone">
+
+    <Button
+        android:id="@+id/btn_return"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/scrollbarTrackVertical"
+        android:text="＜ 返回"
+        android:textColor="@android:color/white"
+        android:textSize="15sp" />
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btn_return"
+        android:layout_marginTop="50dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:text="请输入验证码"
+        android:textColor="@android:color/white"
+        android:textSize="32sp" />
+
+    <LinearLayout
+        android:id="@+id/cc"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/nm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/title"
+            android:layout_marginBottom="30dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginTop="30dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <com.dalimao.corelibrary.VerificationCodeInput
+                android:id="@+id/input_code"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_weight="0"
+                ver:box="4"
+                ver:box_bg_focus="@drawable/verification_edit_bg_focus"
+                ver:box_bg_normal="@drawable/verification_edit_bg_normal"
+                ver:child_h_padding="5dp"
+                ver:inputType="number" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

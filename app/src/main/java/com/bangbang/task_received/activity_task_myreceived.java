@@ -1,5 +1,6 @@
 package com.bangbang.task_received;
 
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
@@ -33,10 +34,10 @@ public class activity_task_myreceived extends AppCompatActivity {
             super.handleMessage(msg);
         }
     };
-    Thread thread_getState = null;
+    Thread thread_getTask = null;
     XRecyclerView recyclerView = null;
     xRecAdapter_task_myreceived xRecAdapter_task_received ;
-    String account = "994318935";
+    String account = "";
     boolean havedata = true;
     int addStart = 0;
     List<Task>task_releaseds = new ArrayList <Task>();
@@ -44,6 +45,8 @@ public class activity_task_myreceived extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task_released);
+        Intent intent = getIntent();
+        account = intent.getStringExtra("account");
 
     }
     @Override
@@ -80,15 +83,15 @@ public class activity_task_myreceived extends AppCompatActivity {
         });
     }
     void addData() {
-        if(thread_getState!=null) {
-            thread_getState.interrupt();
+        if(thread_getTask!=null) {
+            thread_getTask.interrupt();
         }
-        thread_getState = new Thread(new Runnable() {
+        thread_getTask = new Thread(new Runnable() {
             @Override
             public void run() {
                 Log.d("BEFORE", addStart+"");
-                parseJSON(getdutyList(addStart,addStart+10));
-                if(havedata) {
+
+                if(havedata&&!parseJSON(getdutyList(addStart,addStart+10)).equals("nodata")) {
                     addStart += 10;
                     mHandler.post(new Runnable() {
                         @Override
@@ -111,17 +114,17 @@ public class activity_task_myreceived extends AppCompatActivity {
             }
         });
 
-        thread_getState.start();
+        thread_getTask.start();
 
 
     }
     void initData() {
         task_releaseds.clear();
         xRecAdapter_task_received.notifyDataSetChanged();
-        if(thread_getState!=null) {
-            thread_getState.interrupt();
+        if(thread_getTask!=null) {
+            thread_getTask.interrupt();
         }
-        thread_getState = new Thread(new Runnable() {
+        thread_getTask = new Thread(new Runnable() {
             @Override
             public void run() {
                 parseJSON(getdutyList(0,10));
@@ -136,7 +139,7 @@ public class activity_task_myreceived extends AppCompatActivity {
                 addStart = 10;
             }
         });
-        thread_getState.start();
+        thread_getTask.start();
     }
     String getdutyList(int start,int end){
         String result = ""; //用来取得返回的String；
@@ -171,7 +174,7 @@ public class activity_task_myreceived extends AppCompatActivity {
         }
         return result;
     }
-    void parseJSON(String jsonData){
+    String parseJSON(String jsonData){
         Log.d("JSON" ,jsonData);
         try {
             JSONArray jsonArray = new JSONArray(jsonData);
@@ -191,6 +194,7 @@ public class activity_task_myreceived extends AppCompatActivity {
                         jsonObject.getString("name_received")
                 ));
             }
+
         } catch (JSONException e) {
             mHandler.post(new Runnable() {
                 @Override
@@ -199,8 +203,10 @@ public class activity_task_myreceived extends AppCompatActivity {
                     Toast.makeText(activity_task_myreceived.this, "下面没有啦！", Toast.LENGTH_SHORT).show();
                 }
             });
+            return "nodata";
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return "success";
     }
 }

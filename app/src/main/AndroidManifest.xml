@@ -7,6 +7,12 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="android.permission.READ_SMS" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
 
     <application
         android:allowBackup="true"
@@ -15,15 +21,38 @@
         android:roundIcon="@drawable/icon"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".taskhall.MainActivity">
+        <activity
+            android:name=".login.activity_login"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".task_released.activity_task_myreleased"></activity>
-        <activity android:name=".task_received.activity_task_myreceived"></activity>
+        <activity
+            android:name=".task_released.activity_task_myreleased"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".task_received.activity_task_myreceived"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".taskhall.MainActivity"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".register.activity_register_getphone"
+            android:launchMode="singleTask" />
+
+        <meta-data
+            android:name="Mob-AppKey"
+            android:value="28246b86135a6" />
+        <meta-data
+            android:name="Mob-AppSecret"
+            android:value="129fb80ce1af5f7727d1a99584620e96" />
+
+        <activity android:name=".register.activity_register_getcord" />
+        <activity android:name=".register.activity_register_getUserInfo" />
+        <activity android:name=".register.activity_register_end"></activity>
     </application>
 
 </manifest>

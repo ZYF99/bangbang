@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#b8ff9900</color>
-    <color name="colorPrimaryDark">#f5ff9900</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorPrimary">#3c5671</color>
+    <color name="colorPrimaryDark">#3c5671</color>
+    <color name="colorAccent">#315275</color>
+    <color name="progress_back">#00ffffff</color>
+    <color name="progress_backt">#555</color>
+    <color name="gang">#fff</color>
 </resources>
