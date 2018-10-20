@@ -1,25 +1,29 @@
 package com.bangbang.taskhall;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Point;
+import android.graphics.Rect;
 import android.os.Handler;
 import android.os.Message;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.TextView;
+import android.widget.ScrollView;
 import android.widget.Toast;
-
 import com.bangbang.R;
 import com.bangbang.bean.Task;
 import com.bangbang.task_received.activity_task_myreceived;
-import com.bangbang.task_received.xRecAdapter_task_myreceived;
 import com.bangbang.task_released.activity_task_myreleased;
 import com.bangbang.utils.ActivityManager;
 import com.bangbang.utils.GlideImageLoader;
@@ -30,7 +34,6 @@ import com.youth.banner.Banner;
 import com.youth.banner.BannerConfig;
 import com.youth.banner.Transformer;
 import com.youth.banner.listener.OnBannerListener;
-
 import org.apache.http.HttpResponse;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
@@ -41,7 +44,6 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -52,6 +54,9 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener ,OnBannerListener{
     private Handler mHandler = new Handler() {
         @Override
@@ -60,21 +65,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     };
     private Banner banner;
+    private DrawerLayout myDrawer;
+    CircleImageView touxiang;
+    NavigationView naview;
+    ScrollView scrollView = null;
     XRecyclerView recyclerView = null;
     xRecAdapter_task_taskhall xRecAdapter_task_taskhall;
     int addStart = 0;
     Thread thread_getTask = null;
     boolean havedata = true;
-    TextView textMsg = null;
     Button sendMsg = null;
     Button btn_myReceived;
     Button btn_myReleased;
     List<Task> tasks = new ArrayList <Task>();
     private ArrayList<String> list_path;
     private ArrayList<String> list_title;
-
-
     String account = "";
+    Point p;
+    int screenWidth;
+    int screenHeight;
+    Rect rect;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,21 +94,81 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         getWindow().setFlags(WindowManager.LayoutParams. FLAG_FULLSCREEN , WindowManager.LayoutParams. FLAG_FULLSCREEN);
         */
         setContentView(R.layout.activity_main);
+        p = new Point();
+        getWindowManager().getDefaultDisplay().getSize(p);
+        screenWidth=p.x;
+        screenHeight=p.y;
+        rect=new Rect(0,0,screenWidth,screenHeight );
         Intent intent = getIntent();
         account = intent.getStringExtra("account");
         getId();
+        init();
         getBanner();
         initRec();
         keepLongConnection(account);//Socket与服务器保持一个长连接
     }
 
+    private void init() {
+        Toolbar toolbar=findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+       // toolbar.setNavigationIcon(R.drawable.);
+        touxiang.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                myDrawer.openDrawer(GravityCompat.START);
+                myDrawer.setSelected(false);
+                naview.setCheckedItem(R.id.scrollview);
+            }
+        });
+
+
+
+        naview.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected( MenuItem item) {
+
+                myDrawer.closeDrawer(GravityCompat.START);
+                switch (item.getItemId()){
+                    case R.id.menu_1:
+                        //Toast.makeText(MainActivity.this, "打开了侧边栏" , Toast.LENGTH_LONG).show();
+                        break;
+                    case R.id.menu_2:
+                       // Toast.makeText(MainActivity.this, "打开了侧边栏" , Toast.LENGTH_LONG).show();
+
+                        break;
+                    case R.id.menu_3:
+                      //  Toast.makeText(MainActivity.this, "打开了侧边栏" , Toast.LENGTH_LONG).show();
+
+                        break;
+                    case R.id.menu_4:
+                      //  Toast.makeText(MainActivity.this, "打开了侧边栏" , Toast.LENGTH_LONG).show();
+                        break;
+                    case R.id.menu_6:
+                        //Toast.makeText(MainActivity.this, "打开了侧边栏" , Toast.LENGTH_LONG).show();
+                        break;
+                    case R.id.menu_7:
+                       // Toast.makeText(MainActivity.this, "打开了侧边栏" , Toast.LENGTH_LONG).show();
+                        break;
+                    case R.id.menu_11:
+                      //  Toast.makeText(MainActivity.this, "打开了侧边栏" , Toast.LENGTH_LONG).show();
+                        break;
+                }
+                return  true;
+            }
+        });
+    }
+
     //初始化控件
     void getId(){
+        scrollView = findViewById(R.id.scrollview);
+        myDrawer=findViewById(R.id.drawerlayout);
         recyclerView = findViewById(R.id.xrec);
+        naview = findViewById(R.id.nav_list);
         sendMsg = (Button) findViewById(R.id.button_sendmsg);
-        textMsg = (TextView)findViewById(R.id.msg_received);
         btn_myReleased = (Button)findViewById(R.id.btn_myreleased);
         btn_myReceived = (Button)findViewById(R.id.btn_myreceived);
+        touxiang = findViewById(R.id.circle_touxiang);
         sendMsg.setOnClickListener(this);
         btn_myReleased.setOnClickListener(this);
         btn_myReceived.setOnClickListener(this);
@@ -119,13 +189,42 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onLoadMore() {
                 addData();  //上拉加载添加数据
+
             }
             //下拉刷新监听
             @Override
             public void onRefresh() {
                 initData();     //初始化数据
+
             }
         });
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+
+            }
+
+            @Override
+            public void onScrolled(RecyclerView m_recyclerView, int dx, int dy) {
+                super.onScrolled(m_recyclerView, dx, dy);
+                if (banner.getLocalVisibleRect(rect))
+                {
+                    //recyclerView.setNestedScrollingEnabled(false);
+                    //recyclerView.setLoadingMoreEnabled(false);
+                    //recyclerView.setPullRefreshEnabled(true);
+                    System.out.println("---------控件在屏幕可见区域-----------------");
+                } else
+                    {
+                        //recyclerView.setNestedScrollingEnabled(true);
+                        //recyclerView.setLoadingMoreEnabled(true);
+                        //recyclerView.setPullRefreshEnabled(false);
+                    System.out.println("---------控件已不在屏幕可见区域-----------------");
+                    }
+
+            }
+        });
+
     }
     //初始化控件
 
@@ -163,7 +262,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         return result;
     }
-    String parseJSON(String jsonData){
+    String parseJSON(String jsonData)   {
         Log.d("JSON" ,jsonData);
         try {
             JSONArray jsonArray = new JSONArray(jsonData);
@@ -182,6 +281,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         jsonObject.getString("name_send"),
                         jsonObject.getString("name_received")
                 ));
+
             }
         } catch (JSONException e) {
             mHandler.post(new Runnable() {
@@ -228,7 +328,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void run() {
                 Log.d("BEFORE", addStart+"");
-                parseJSON(getdutyList(addStart,addStart+10));
+
                 if(havedata&&!parseJSON(getdutyList(addStart,addStart+10)).equals("nodata")) {
                     addStart += 10;
                     mHandler.post(new Runnable() {
@@ -265,7 +365,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 BufferedReader in = null;
                 String msg = "";
                 try {
+                    //socket = new Socket(InetAddress.getByName("132.232.93.93"), 6235);
                     socket = new Socket(InetAddress.getByName("132.232.93.93"), 6235);
+
+
+
                     //创建向服务器端发送信息的线程并启动
                     new ClientThread(socket,sendMsg,account).start();
                     in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -280,8 +384,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                     mHandler.post(new Runnable() {
                                         @Override
                                         public void run() {
-                                            String msg = textMsg.getText().toString()+"\n"+finalMsg;
-                                            textMsg.setText("服务器消息：" + msg);
+
+                                            Toast.makeText(MainActivity.this,finalMsg,Toast.LENGTH_SHORT).show();
+
                                         }
                                     });
                             }
@@ -396,7 +501,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         try {
             out = new BufferedWriter(new OutputStreamWriter(s.getOutputStream()));
-            String str = "Client："+account;
+            String str = account;
             out.write(str+"\n");
             out.flush();
         } catch (IOException e) {
@@ -407,9 +512,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             btn_sendMsg.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
-                sendMsgOnSocket("**********task %ID have received**********");
-
+                    sendMsgOnSocket("17760485737");
                 }
             });
         }
@@ -424,6 +527,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             out = new BufferedWriter(new OutputStreamWriter(s.getOutputStream()));
                             out.write(msg+"\n");
                             out.flush();
+                            out.close();
                         } catch (IOException e) {
                             e.printStackTrace();
                         }

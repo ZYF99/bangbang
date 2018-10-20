@@ -50,7 +50,8 @@
             android:gravity="center"
             android:orientation="horizontal">
 
-            <com.dalimao.corelibrary.VerificationCodeInput
+
+            <com.bangbang.register.VerificationCodeInput
                 android:id="@+id/input_code"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -61,6 +62,7 @@
                 ver:box_bg_normal="@drawable/verification_edit_bg_normal"
                 ver:child_h_padding="5dp"
                 ver:inputType="number" />
+
 
         </LinearLayout>
 

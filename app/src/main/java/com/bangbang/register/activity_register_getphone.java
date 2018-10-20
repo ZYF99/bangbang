@@ -1,5 +1,6 @@
 package com.bangbang.register;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
@@ -9,6 +10,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -18,7 +20,7 @@ import cn.smssdk.EventHandler;
 import cn.smssdk.SMSSDK;
 
 public class activity_register_getphone extends AppCompatActivity implements View.OnClickListener {
-
+    InputMethodManager imm = null;
     String phone = "";
     EditText input_phone = null;
     Button btn_getCord = null;
@@ -33,6 +35,7 @@ public class activity_register_getphone extends AppCompatActivity implements Vie
         getWindow().setFlags(WindowManager.LayoutParams. FLAG_FULLSCREEN , WindowManager.LayoutParams. FLAG_FULLSCREEN);
         setContentView(R.layout.activity_register_getphone);
         ActivityManager.getInstance().addActivity(activity_register_getphone.this);
+        imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         getId();
 
         eventHandler = new EventHandler() {
@@ -52,7 +55,9 @@ public class activity_register_getphone extends AppCompatActivity implements Vie
         input_phone = (EditText)findViewById(R.id.input_account);
         btn_getCord=findViewById(R.id.btn_getcode);
         btn_return=findViewById(R.id.btn_return);
-        input_phone.requestFocus();
+        //input_phone.requestFocus();
+        //input_phone.setSelection(0);
+        imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
         btn_getCord.setOnClickListener(this);
         btn_return.setOnClickListener(this);
     }
@@ -132,8 +137,7 @@ public class activity_register_getphone extends AppCompatActivity implements Vie
                 if(result == SMSSDK.RESULT_COMPLETE) {
                     boolean smart = (Boolean)data;
                     if(smart) {
-                        Toast.makeText(getApplicationContext(),"该手机号已经注册过，请重新输入",
-                                Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(),"该手机号已经注册过，请重新输入", Toast.LENGTH_LONG).show();
                         input_phone.requestFocus();
                         return;
                     }

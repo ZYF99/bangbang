@@ -52,7 +52,7 @@
 
         <activity android:name=".register.activity_register_getcord" />
         <activity android:name=".register.activity_register_getUserInfo" />
-        <activity android:name=".register.activity_register_end"></activity>
+        <activity android:name=".register.activity_register_end" />
     </application>
 
 </manifest>

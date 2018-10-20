@@ -1,5 +1,6 @@
 package com.bangbang.register;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
@@ -9,16 +10,17 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.Toast;
 import com.bangbang.R;
 import com.bangbang.utils.ActivityManager;
-import com.dalimao.corelibrary.VerificationCodeInput;
 import cn.smssdk.EventHandler;
 import cn.smssdk.SMSSDK;
 
 public class activity_register_getcord extends AppCompatActivity implements View.OnClickListener {
 
+    InputMethodManager imm = null;
     EventHandler eventHandler;
     VerificationCodeInput edit_cord = null;
     //EditText edit_cord = null;
@@ -31,16 +33,17 @@ public class activity_register_getcord extends AppCompatActivity implements View
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //全屏
         ActivityManager.getInstance().addActivity(activity_register_getcord.this);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         //全屏
-        getWindow().setFlags(WindowManager.LayoutParams. FLAG_FULLSCREEN ,
-                WindowManager.LayoutParams. FLAG_FULLSCREEN);
+        getWindow().setFlags(WindowManager.LayoutParams. FLAG_FULLSCREEN , WindowManager.LayoutParams. FLAG_FULLSCREEN);
         setContentView(R.layout.activity_register_getcord);
+        imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         Intent intent_o = getIntent();
         phone_number = intent_o.getStringExtra("phone");
         getId();
-        edit_cord.requestFocus();
+
 
         /*******************************************************************************/
         eventHandler = new EventHandler() {
@@ -80,9 +83,12 @@ public class activity_register_getcord extends AppCompatActivity implements View
             {
                 if(flag) {
                     Toast.makeText(getApplicationContext(), "获取验证码失败", Toast.LENGTH_LONG).show();
+                    imm.hideSoftInputFromWindow(getCurrentFocus().getApplicationWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);//隐藏软键盘
                 }else {
                     Toast.makeText(getApplicationContext(), "验证码输入错误", Toast.LENGTH_LONG).show();
                     edit_cord.setEnabled(true);
+                    edit_cord.clearAllData();
+                    imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);//弹出软键盘
                 }
             }
         }
@@ -91,7 +97,8 @@ public class activity_register_getcord extends AppCompatActivity implements View
     private void getId(){
         edit_cord = findViewById(R.id.input_code);
         btn_return = findViewById(R.id.btn_return);
-        edit_cord.requestFocus();
+        edit_cord.clearAllData();
+        imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);//弹出软键盘
         btn_return.setOnClickListener(this);
         edit_cord.setOnCompleteListener(new VerificationCodeInput.Listener() {
             @Override
@@ -99,6 +106,8 @@ public class activity_register_getcord extends AppCompatActivity implements View
                 if(judCord(content)) {
                     SMSSDK.submitVerificationCode("86", phone_number, cord_number);
                     flag = false;
+                    imm.hideSoftInputFromWindow(getCurrentFocus().getApplicationWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);//隐藏软键盘
+
                 }
             }
         });
@@ -123,7 +132,6 @@ public class activity_register_getcord extends AppCompatActivity implements View
             cord_number=cord.trim();
             return true;
         }
-
     }
     @Override
     protected void onDestroy() {

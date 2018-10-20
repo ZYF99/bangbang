@@ -50,7 +50,7 @@ public class xRecAdapter_task_taskhall extends RecyclerView.Adapter<xRecAdapter_
     }
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.item_task_released,null);
+        View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.item_task_taskhall,null);
         MyViewHolder myViewHolder=new MyViewHolder(view);
         return myViewHolder;
     }

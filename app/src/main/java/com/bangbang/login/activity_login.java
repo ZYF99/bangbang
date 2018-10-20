@@ -115,6 +115,7 @@ public class activity_login extends AppCompatActivity {
                             editor.putString("login","2");
                             editor.commit();
                             startActivity(intent);
+                            finish();
 
                         }
                         else{
@@ -233,6 +234,7 @@ public class activity_login extends AppCompatActivity {
             intent.putExtra("account",account);
             startActivity(intent);
             overridePendingTransition(R.anim.enter_zoom_go_in,R.anim.enter_zoom_go_out);
+            finish();
         }
     }
     @Override

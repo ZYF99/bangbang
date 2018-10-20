@@ -90,7 +90,7 @@ public class activity_task_myreleased extends AppCompatActivity {
             @Override
             public void run() {
                 Log.d("BEFORE", addStart+"");
-                parseJSON(getdutyList(addStart,addStart+10));
+
                 if(havedata&&!parseJSON(getdutyList(addStart,addStart+10)).equals("nodata")) {
                     addStart += 10;
                     mHandler.post(new Runnable() {
