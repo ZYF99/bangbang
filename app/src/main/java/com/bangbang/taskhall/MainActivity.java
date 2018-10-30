@@ -1,8 +1,6 @@
 package com.bangbang.taskhall;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Point;
-import android.graphics.Rect;
 import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.NavigationView;
@@ -12,14 +10,15 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ScrollView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 import com.bangbang.R;
 import com.bangbang.bean.Task;
@@ -30,7 +29,6 @@ import com.bangbang.utils.GlideImageLoader;
 import com.bangbang.utils.animation_rec_item;
 import com.jcodecraeer.xrecyclerview.ProgressStyle;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
-import com.youth.banner.Banner;
 import com.youth.banner.BannerConfig;
 import com.youth.banner.Transformer;
 import com.youth.banner.listener.OnBannerListener;
@@ -53,9 +51,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
-
 import de.hdodenhof.circleimageview.CircleImageView;
-
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener ,OnBannerListener{
     private Handler mHandler = new Handler() {
@@ -64,110 +60,58 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             super.handleMessage(msg);
         }
     };
-    private Banner banner;
-    private DrawerLayout myDrawer;
+    Toolbar toolbar;
+    myBanner banner;
+    DrawerLayout myDrawer;
     CircleImageView touxiang;
+    View view_header;
     NavigationView naview;
-    ScrollView scrollView = null;
+    RelativeLayout Rel_header;
     XRecyclerView recyclerView = null;
     xRecAdapter_task_taskhall xRecAdapter_task_taskhall;
-    int addStart = 0;
-    Thread thread_getTask = null;
-    boolean havedata = true;
-    Button sendMsg = null;
+    Button sendMsg ;
     Button btn_myReceived;
     Button btn_myReleased;
-    List<Task> tasks = new ArrayList <Task>();
-    private ArrayList<String> list_path;
-    private ArrayList<String> list_title;
+    Thread thread_getTask = null;
+
+    int addStart = 0;
+    boolean havedata = true;
     String account = "";
-    Point p;
-    int screenWidth;
-    int screenHeight;
-    Rect rect;
+    List<Task> tasks = new ArrayList <Task>();
+    ArrayList<String> list_path;
+    ArrayList<String> list_title;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ActivityManager.getInstance().addActivity(MainActivity.this);
-/*        //全屏
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams. FLAG_FULLSCREEN , WindowManager.LayoutParams. FLAG_FULLSCREEN);
-        */
         setContentView(R.layout.activity_main);
-        p = new Point();
-        getWindowManager().getDefaultDisplay().getSize(p);
-        screenWidth=p.x;
-        screenHeight=p.y;
-        rect=new Rect(0,0,screenWidth,screenHeight );
+
         Intent intent = getIntent();
         account = intent.getStringExtra("account");
+
         getId();
-        init();
+        initNav();
         getBanner();
         initRec();
+        initData();
         keepLongConnection(account);//Socket与服务器保持一个长连接
+
     }
 
-    private void init() {
-        Toolbar toolbar=findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
-       // toolbar.setNavigationIcon(R.drawable.);
-        touxiang.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                myDrawer.openDrawer(GravityCompat.START);
-                myDrawer.setSelected(false);
-                naview.setCheckedItem(R.id.scrollview);
-            }
-        });
-
-
-
-        naview.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected( MenuItem item) {
-
-                myDrawer.closeDrawer(GravityCompat.START);
-                switch (item.getItemId()){
-                    case R.id.menu_1:
-                        //Toast.makeText(MainActivity.this, "打开了侧边栏" , Toast.LENGTH_LONG).show();
-                        break;
-                    case R.id.menu_2:
-                       // Toast.makeText(MainActivity.this, "打开了侧边栏" , Toast.LENGTH_LONG).show();
-
-                        break;
-                    case R.id.menu_3:
-                      //  Toast.makeText(MainActivity.this, "打开了侧边栏" , Toast.LENGTH_LONG).show();
-
-                        break;
-                    case R.id.menu_4:
-                      //  Toast.makeText(MainActivity.this, "打开了侧边栏" , Toast.LENGTH_LONG).show();
-                        break;
-                    case R.id.menu_6:
-                        //Toast.makeText(MainActivity.this, "打开了侧边栏" , Toast.LENGTH_LONG).show();
-                        break;
-                    case R.id.menu_7:
-                       // Toast.makeText(MainActivity.this, "打开了侧边栏" , Toast.LENGTH_LONG).show();
-                        break;
-                    case R.id.menu_11:
-                      //  Toast.makeText(MainActivity.this, "打开了侧边栏" , Toast.LENGTH_LONG).show();
-                        break;
-                }
-                return  true;
-            }
-        });
-    }
 
     //初始化控件
     void getId(){
-        scrollView = findViewById(R.id.scrollview);
+        view_header = LayoutInflater.from(this).inflate(R.layout.recyclerview_header, (ViewGroup)findViewById(android.R.id.content),false);
+        Rel_header = view_header.findViewById(R.id.header_relative);
+        banner=view_header.findViewById(R.id.banner);
         myDrawer=findViewById(R.id.drawerlayout);
+        toolbar=findViewById(R.id.toolbar);
         recyclerView = findViewById(R.id.xrec);
         naview = findViewById(R.id.nav_list);
-        sendMsg = (Button) findViewById(R.id.button_sendmsg);
-        btn_myReleased = (Button)findViewById(R.id.btn_myreleased);
-        btn_myReceived = (Button)findViewById(R.id.btn_myreceived);
+        sendMsg = view_header.findViewById(R.id.button_sendmsg);
+        btn_myReleased = view_header.findViewById(R.id.btn_myreleased);
+        btn_myReceived = view_header.findViewById(R.id.btn_myreceived);
         touxiang = findViewById(R.id.circle_touxiang);
         sendMsg.setOnClickListener(this);
         btn_myReleased.setOnClickListener(this);
@@ -181,53 +125,72 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         recyclerView.setLayoutManager(xLinearLayoutManager);
         xRecAdapter_task_taskhall = new xRecAdapter_task_taskhall(MainActivity.this,tasks);
         recyclerView.setAdapter(xRecAdapter_task_taskhall);
-        /*recyclerView.setNestedScrollingEnabled(false);*/
+        //recyclerView.setNestedScrollingEnabled(false);
         //recyclerView.setArrowImageView(R.drawable.qwe);     //设定下拉刷新显示图片（不必须）
-        initData();   //初始化数据
+        recyclerView.addHeaderView(Rel_header);
         recyclerView.setLoadingListener(new XRecyclerView.LoadingListener() {
             //上拉加载监听
             @Override
             public void onLoadMore() {
                 addData();  //上拉加载添加数据
-
             }
             //下拉刷新监听
             @Override
             public void onRefresh() {
                 initData();     //初始化数据
-
             }
         });
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
 
-            }
-
-            @Override
-            public void onScrolled(RecyclerView m_recyclerView, int dx, int dy) {
-                super.onScrolled(m_recyclerView, dx, dy);
-                if (banner.getLocalVisibleRect(rect))
-                {
-                    //recyclerView.setNestedScrollingEnabled(false);
-                    //recyclerView.setLoadingMoreEnabled(false);
-                    //recyclerView.setPullRefreshEnabled(true);
-                    System.out.println("---------控件在屏幕可见区域-----------------");
-                } else
-                    {
-                        //recyclerView.setNestedScrollingEnabled(true);
-                        //recyclerView.setLoadingMoreEnabled(true);
-                        //recyclerView.setPullRefreshEnabled(false);
-                    System.out.println("---------控件已不在屏幕可见区域-----------------");
-                    }
-
-            }
-        });
 
     }
     //初始化控件
 
+
+    //初始化侧拉界面
+    private void initNav() {
+        setSupportActionBar(toolbar);
+        touxiang.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                myDrawer.openDrawer(GravityCompat.START);
+                myDrawer.setSelected(false);
+                naview.setCheckedItem(R.id.relative);
+            }
+        });
+
+        naview.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected( MenuItem item) {
+
+                myDrawer.closeDrawer(GravityCompat.START);
+                switch (item.getItemId()){
+                    case R.id.menu_1:
+
+                        break;
+                    case R.id.menu_2:
+
+                        break;
+                    case R.id.menu_3:
+
+                        break;
+                    case R.id.menu_4:
+
+                        break;
+                    case R.id.menu_6:
+
+                        break;
+                    case R.id.menu_7:
+
+                        break;
+                    case R.id.menu_11:
+
+                        break;
+                }
+                return  true;
+            }
+        });
+    }
+    //初始化侧拉界面
 
     //得到任务列表
     String getdutyList(int start,int end){
@@ -424,40 +387,46 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
     //点击事件
 
+
     //广告栏
     private void getBanner() {
-        banner=findViewById(R.id.banner);
+
         list_path = new ArrayList<>();
         list_title = new ArrayList<>();
-        list_path.add("http://132.232.93.93/bangbang/imgs/1.jpg");
-        list_path.add("http://132.232.93.93/bangbang/imgs/2.jpg");
-        list_path.add("http://132.232.93.93/bangbang/imgs/3.jpg");
-        list_path.add("http://132.232.93.93/bangbang/imgs/4.jpg");
+        list_path.add("http://132.232.93.93/bangbang/imgs/1.png");
+        list_path.add("http://132.232.93.93/bangbang/imgs/2.png");
+        list_path.add("http://132.232.93.93/bangbang/imgs/3.png");
+        list_path.add("http://132.232.93.93/bangbang/imgs/4.png");
+
         list_title.add("好好学习");
         list_title.add("天天向上");
         list_title.add("热爱劳动");
         list_title.add("不搞对象");
+
+
         banner.setBannerStyle(BannerConfig.CIRCLE_INDICATOR_TITLE_INSIDE);
         //设置图片加载器，图片加载器在下方
         banner.setImageLoader(new GlideImageLoader());
         //设置图片网址或地址的集合
         banner.setImages(list_path);
         //设置轮播的动画效果，内含多种特效，可点入方法内查找后内逐一体验
-        banner.setBannerAnimation(Transformer.Default);
+        banner.setBannerAnimation(Transformer.FlipHorizontal);
         //设置轮播图的标题集合
         banner.setBannerTitles(list_title);
         //设置轮播间隔时间
         banner.setDelayTime(3000);
         //设置是否为自动轮播，默认是“是”。
-        banner.isAutoPlay(true);
+        //banner.isAutoPlay(true);
         //设置指示器的位置，小点点，左中右。
-        banner.setIndicatorGravity(BannerConfig.CENTER)
+        banner.setIndicatorGravity(BannerConfig.CIRCLE_INDICATOR).setOnBannerListener(this).start();
                 //以上内容都可写成链式布局，这是轮播图的监听。比较重要。方法在下面。
-                .setOnBannerListener(this)
                 //必须最后调用的方法，启动轮播图。
-                .start();
 
     }
+
+
+
+
     @Override
     public void OnBannerClick(int position) {
 
@@ -485,12 +454,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return super.onKeyDown(KeyCode,event);
     }
     //back键
+
 }
+
+
     class ClientThread extends Thread{
     String account;
     Socket s;
     BufferedWriter out;
     Button btn_sendMsg = null;
+
     public ClientThread(Socket s,Button btn_sendMsg,String account) {
         this.btn_sendMsg = btn_sendMsg;
         this.s = s;
@@ -535,9 +508,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }).start();
             }catch (Exception e){
                 e.printStackTrace();
-            }
-            finally {
-
             }
         }
 

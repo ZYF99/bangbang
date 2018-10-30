@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/header_relative"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center">
+
+        <com.bangbang.taskhall.myBanner
+            android:id="@+id/banner"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_weight="0">
+        </com.bangbang.taskhall.myBanner>
+
+        <LinearLayout
+            android:id="@+id/li"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/banner"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:visibility="visible">
+
+                <Button
+                    android:id="@+id/btn_myreleased"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@color/colorPrimary"
+                    android:text="我发布的"
+                    android:textColor="#161616"
+                    android:textSize="16sp" />
+
+                <Button
+                    android:id="@+id/button_sendmsg"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_weight="1"
+                    android:background="@color/colorPrimary"
+                    android:text="发个消息"
+                    android:textColor="#161616"
+                    android:textSize="16sp" />
+
+                <Button
+                    android:id="@+id/btn_myreceived"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@color/colorPrimary"
+                    android:text="我接受的"
+                    android:textColor="#161616"
+                    android:textSize="16sp" />
+        </LinearLayout>
+
+
+</RelativeLayout>
+
+
+
