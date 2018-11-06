@@ -3,8 +3,8 @@ package com.bangbang.bean;
 public class Task {
     int id = 0;
     String business = "";
-    String accoount_send = "";
-    String accoount_received = "";
+    String account_send = "";
+    String account_received = "";
     String task = "";
     int money = 0;
     String address = "";
@@ -12,11 +12,11 @@ public class Task {
     String time = "";
     String name_send = "";
     String name_received = "";
-    public Task(int id ,String business,String account_send,String accoount_received, String task,int money,String address,String state,String time,String name_send,String name_received){
+    public Task(int id ,String business,String account_send,String account_received, String task,int money,String address,String state,String time,String name_send,String name_received){
         this.id = id;
         this.business = business;
-        this.accoount_send =account_send;
-        this.accoount_received=accoount_received;
+        this.account_send =account_send;
+        this.account_received=account_received;
         this.task = task;
         this.money = money;
         this.address = address;
@@ -37,17 +37,17 @@ public class Task {
     public void setName_received(String name_received) {
         this.name_received = name_received;
     }
-    public String getAccoount_send() {
-        return accoount_send;
+    public String getAccount_send() {
+        return account_send;
     }
-    public void setAccoount_send(String accoount_send) {
-        this.accoount_send = accoount_send;
+    public void setAccount_send(String account_send) {
+        this.account_send = account_send;
     }
-    public String getAccoount_received() {
-        return accoount_received;
+    public String getAccount_received() {
+        return account_received;
     }
-    public void setAccoount_received(String accoount_received) {
-        this.accoount_received = accoount_received;
+    public void setAccount_received(String account_received) {
+        this.account_received = account_received;
     }
     public String getTime() {
         return time;

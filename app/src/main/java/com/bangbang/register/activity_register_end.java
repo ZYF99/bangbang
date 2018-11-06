@@ -23,6 +23,7 @@ public class activity_register_end extends AppCompatActivity implements View.OnC
         intent_o = getIntent();
         intent = new Intent(activity_register_end.this, MainActivity.class);
         intent.putExtra("account",intent_o.getStringExtra("account"));
+        intent.putExtra("user_name",intent_o.getStringExtra("user_name"));
         img1.setOnClickListener(this);
         img2.setOnClickListener(this);
 
@@ -33,10 +34,12 @@ public class activity_register_end extends AppCompatActivity implements View.OnC
             case R.id.img1:
 
                 startActivity(intent);
+                overridePendingTransition(R.anim.enter_zoom_return_out,R.anim.enter_zoom_return_in);
                 break;
             case R.id.img2:
 
                 startActivity(intent);
+                overridePendingTransition(R.anim.enter_zoom_return_out,R.anim.enter_zoom_return_in);
                 break;
         }
 

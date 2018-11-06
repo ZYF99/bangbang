@@ -7,6 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.bangbang.R;
 import com.bangbang.bean.Task;
@@ -36,6 +38,8 @@ public class activity_task_myreleased extends AppCompatActivity {
     };
     Thread thread_getState = null;
     XRecyclerView recyclerView = null;
+    TextView title_num;
+    int count = 0;
     String account = "";
     xRecAdapter_task_myreleased xRecAdapter_task_released ;
     boolean havedata = true;
@@ -53,10 +57,11 @@ public class activity_task_myreleased extends AppCompatActivity {
     public void onResume() {
         super.onResume();
         recyclerView = (XRecyclerView) findViewById(R.id.xrec);
+        title_num = findViewById(R.id.released_title);
         initView();
     }
     void initView(){
-
+        title_num.setText("你已发布0个任务");
         initRec();
     }
     void initRec(){
@@ -181,6 +186,13 @@ public class activity_task_myreleased extends AppCompatActivity {
             havedata = true;
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
+                count = jsonObject.getInt("count");
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        title_num.setText("你已发布"+count+"个任务");
+                    }
+                });
                 task_releaseds.add(new Task(jsonObject.getInt("id"),
                         jsonObject.getString("business"),
                         jsonObject.getString("account_send"),
@@ -208,4 +220,16 @@ public class activity_task_myreleased extends AppCompatActivity {
         }
         return "success";
     }
+
+
+    //back键
+    public boolean onKeyDown(int KeyCode, KeyEvent event)
+    {
+        if(KeyCode ==KeyEvent.KEYCODE_BACK) {
+            finish();
+            overridePendingTransition(R.anim.enter_zoom_return_out,R.anim.enter_zoom_return_in);
+        }
+        return super.onKeyDown(KeyCode,event);
+    }
+    //back键
 }

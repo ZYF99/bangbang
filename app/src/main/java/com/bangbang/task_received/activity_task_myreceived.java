@@ -1,15 +1,21 @@
 package com.bangbang.task_received;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.bangbang.R;
 import com.bangbang.bean.Task;
+import com.bangbang.taskhall.MainActivity;
+import com.bangbang.utils.ActivityManager;
 import com.jcodecraeer.xrecyclerview.ProgressStyle;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
 import org.apache.http.HttpResponse;
@@ -35,16 +41,21 @@ public class activity_task_myreceived extends AppCompatActivity {
         }
     };
     Thread thread_getTask = null;
+    TextView title_num;
     XRecyclerView recyclerView = null;
+    int count = 0;
     xRecAdapter_task_myreceived xRecAdapter_task_received ;
     String account = "";
     boolean havedata = true;
     int addStart = 0;
-    List<Task>task_releaseds = new ArrayList <Task>();
+    List<Task>task_received = new ArrayList <Task>();
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_task_released);
+        setContentView(R.layout.activity_task_myreceived);
+        title_num = (TextView) findViewById(R.id.received_title);
+        recyclerView = (XRecyclerView) findViewById(R.id.xrec);
+        initView();
         Intent intent = getIntent();
         account = intent.getStringExtra("account");
 
@@ -52,12 +63,14 @@ public class activity_task_myreceived extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        recyclerView = (XRecyclerView) findViewById(R.id.xrec);
-        initView();
+
+
     }
     void initView(){
-
+        title_num.setText("你已发布0个任务");
         initRec();
+
+
     }
     void initRec(){
         LinearLayoutManager xLinearLayoutManager = new LinearLayoutManager(activity_task_myreceived.this);
@@ -65,7 +78,7 @@ public class activity_task_myreceived extends AppCompatActivity {
         recyclerView.setRefreshProgressStyle(ProgressStyle.BallRotate); //设定下拉刷新样式
         recyclerView.setLoadingMoreProgressStyle(ProgressStyle.BallRotate);//设定上拉加载样式
         recyclerView.setLayoutManager(xLinearLayoutManager);
-        xRecAdapter_task_received = new xRecAdapter_task_myreceived(activity_task_myreceived.this,task_releaseds);
+        xRecAdapter_task_received = new xRecAdapter_task_myreceived(activity_task_myreceived.this,task_received);
         recyclerView.setAdapter(xRecAdapter_task_received);
         //recyclerView.setArrowImageView(R.drawable.qwe);     //设定下拉刷新显示图片（不必须）
         initData();   //初始化数据
@@ -119,7 +132,7 @@ public class activity_task_myreceived extends AppCompatActivity {
 
     }
     void initData() {
-        task_releaseds.clear();
+        task_received.clear();
         xRecAdapter_task_received.notifyDataSetChanged();
         if(thread_getTask!=null) {
             thread_getTask.interrupt();
@@ -179,9 +192,20 @@ public class activity_task_myreceived extends AppCompatActivity {
         try {
             JSONArray jsonArray = new JSONArray(jsonData);
             havedata = true;
+
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
-                task_releaseds.add(new Task(jsonObject.getInt("id"),
+                count = jsonObject.getInt("count");
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        title_num.setText("你已接收"+count+"个任务");
+                    }
+                });
+
+
+
+                task_received.add(new Task(jsonObject.getInt("id"),
                         jsonObject.getString("business"),
                         jsonObject.getString("account_send"),
                         jsonObject.getString("account_received"),
@@ -192,8 +216,11 @@ public class activity_task_myreceived extends AppCompatActivity {
                         jsonObject.getString("time"),
                         jsonObject.getString("name_send"),
                         jsonObject.getString("name_received")
+
                 ));
+
             }
+
 
         } catch (JSONException e) {
             mHandler.post(new Runnable() {
@@ -209,4 +236,16 @@ public class activity_task_myreceived extends AppCompatActivity {
         }
         return "success";
     }
+
+
+    //back键
+    public boolean onKeyDown(int KeyCode, KeyEvent event)
+    {
+        if(KeyCode ==KeyEvent.KEYCODE_BACK) {
+            finish();
+            overridePendingTransition(R.anim.enter_zoom_return_out,R.anim.enter_zoom_return_in);
+        }
+        return super.onKeyDown(KeyCode,event);
+    }
+    //back键
 }

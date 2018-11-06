@@ -160,6 +160,7 @@ public class activity_register_getUserInfo extends AppCompatActivity {
                             pro.setVisibility(View.GONE);
                             Intent intent = new Intent(activity_register_getUserInfo.this, activity_register_end.class);
                             intent.putExtra("account",account);
+                            intent.putExtra("user_name",name);
                             startActivity(intent,
                                     ActivityOptions.makeSceneTransitionAnimation(activity_register_getUserInfo.this).toBundle());
 

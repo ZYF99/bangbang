@@ -142,6 +142,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentTop="true"
+            android:background="@null"
             android:text="跳过" />
 
     </RelativeLayout>

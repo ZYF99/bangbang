@@ -6,11 +6,22 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <!-- 背景白色-例如：键盘弹出把所见的视图挤到上面，收回看到的一闪而过的界面为白色 -->
+
     </style>
     <style name="MyEditText" parent="Theme.AppCompat.Light">
         <item name="colorControlNormal">@color/gang</item>
         <item name="colorControlActivated">@color/gang</item>
     </style>
+
+    <style name="Theme.flash" parent="AppTheme">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowBackground">@drawable/bg_flash</item>
+        <item name="android:windowFullscreen">true</item>
+    </style>
+
+
 
 
 

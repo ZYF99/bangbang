@@ -11,26 +11,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.jcodecraeer.xrecyclerview.XRecyclerView
-            android:id="@+id/xrec"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="0"
-            android:layout_below="@id/toolbar"
-            android:background="@color/rec_back"
-            android:layoutAnimation="@anim/layout_animation_from_right"
-            android:overScrollMode="never"
-            android:padding="5dp"
-            android:scrollbars="none"
-            android:visibility="visible">
-
-        </com.jcodecraeer.xrecyclerview.XRecyclerView>
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#76EEc6">
+            android:background="@drawable/back_header">
 
             <android.support.constraint.ConstraintLayout
                 android:layout_width="match_parent"
@@ -64,13 +50,28 @@
                     android:layout_height="wrap_content"
                     android:text="懒虫"
                     android:textColor="@android:color/white"
-                    android:textSize="26sp"
+                    android:textSize="18sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
             </android.support.constraint.ConstraintLayout>
         </android.support.v7.widget.Toolbar>
+
+        <com.jcodecraeer.xrecyclerview.XRecyclerView
+                android:id="@+id/xrec"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingBottom="10dp"
+                android:layout_weight="0"
+                android:layout_below="@id/toolbar"
+                android:background="@color/gang"
+                android:layoutAnimation="@anim/layout_animation_from_right"
+                android:overScrollMode="never"
+                android:scrollbars="none"
+                android:visibility="visible">
+
+            </com.jcodecraeer.xrecyclerview.XRecyclerView>
 
 
     </RelativeLayout>
@@ -80,7 +81,6 @@
         android:layout_gravity="start"
         android:id="@+id/nav_list"
         app:menu="@menu/list_draw"
-        app:headerLayout="@layout/header_draw"
         >
 
     </android.support.design.widget.NavigationView>

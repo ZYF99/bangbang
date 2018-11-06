@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#76EEc6</color>
-    <color name="colorPrimaryDark">#76EEc6</color>
-    <color name="colorAccent">#76EEc6</color>
+    <color name="colorPrimary">#40D585</color>
+    <color name="colorPrimaryDark">#40D585</color>
+    <color name="colorAccent">#40D585</color>
     <color name="rec_back">#00f1f1f1</color>
     <color name="progress_back">#00f1f1f1</color>
     <color name="progress_backt">#555</color>
+    <color name="card_01">#ace0f9</color>
     <color name="gang">#fff</color>
 </resources>

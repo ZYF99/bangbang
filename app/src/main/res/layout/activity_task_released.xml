@@ -5,8 +5,37 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".task_released.activity_task_myreleased">
+    <LinearLayout
+        android:id="@+id/sd"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/background_gradient"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp">
+
+        <TextView
+            android:id="@+id/btn_return"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/s"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/released_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="20"
+            android:gravity="center"
+            android:textColor="@android:color/black"
+            android:textSize="20sp" />
+    </LinearLayout>
     <com.jcodecraeer.xrecyclerview.XRecyclerView
         android:id="@+id/xrec"
+        android:layout_below="@id/sd"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layoutAnimation="@anim/layout_animation_from_right"

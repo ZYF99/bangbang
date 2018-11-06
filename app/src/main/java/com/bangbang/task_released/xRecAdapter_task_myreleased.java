@@ -72,9 +72,9 @@ public class xRecAdapter_task_myreleased extends RecyclerView.Adapter<xRecAdapte
         final String time = task_releaseds.get(position).getTime();
         final String money = "￥"+task_releaseds.get(position).getMoney()+"";
         final String task = task_releaseds.get(position).getTask();
-        //final String state = task_releaseds.get(position).getState();
+        final String state = task_releaseds.get(position).getState();
         holder.textMoney.setText(money);
-        holder.textState.setText("等待抢单");
+        holder.textState.setText(state);
         holder.textTask.setText(task);
         holder.textTime.setText(time);
         holder.textPeople.setText(name_received);

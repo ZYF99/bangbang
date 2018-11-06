@@ -1,6 +1,7 @@
 package com.bangbang.taskhall;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.NavigationView;
@@ -18,19 +19,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.bangbang.R;
 import com.bangbang.bean.Task;
 import com.bangbang.task_received.activity_task_myreceived;
 import com.bangbang.task_released.activity_task_myreleased;
 import com.bangbang.utils.ActivityManager;
-import com.bangbang.utils.GlideImageLoader;
 import com.bangbang.utils.animation_rec_item;
 import com.jcodecraeer.xrecyclerview.ProgressStyle;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
-import com.youth.banner.BannerConfig;
-import com.youth.banner.Transformer;
 import com.youth.banner.listener.OnBannerListener;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -53,6 +53,8 @@ import java.util.ArrayList;
 import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 
+import static com.bangbang.utils.Util_getImage.getBitMBitmap;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener ,OnBannerListener{
     private Handler mHandler = new Handler() {
         @Override
@@ -61,22 +63,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     };
     Toolbar toolbar;
-    myBanner banner;
+    BannerView banner;
+   /* myBanner banner;*/
     DrawerLayout myDrawer;
     CircleImageView touxiang;
     View view_header;
     NavigationView naview;
     RelativeLayout Rel_header;
-    XRecyclerView recyclerView = null;
+    XRecyclerView recyclerView ;
     xRecAdapter_task_taskhall xRecAdapter_task_taskhall;
     Button sendMsg ;
-    Button btn_myReceived;
-    Button btn_myReleased;
-    Thread thread_getTask = null;
+    LinearLayout btn_myReceived;
+    LinearLayout btn_myReleased;
+    TextView draw_name;
+    CircleImageView draw_touxiang;
+    Thread thread_getTask;
 
     int addStart = 0;
     boolean havedata = true;
     String account = "";
+    String user_name = "";
     List<Task> tasks = new ArrayList <Task>();
     ArrayList<String> list_path;
     ArrayList<String> list_title;
@@ -84,17 +90,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ActivityManager.getInstance().addActivity(MainActivity.this);
+
         setContentView(R.layout.activity_main);
+
 
         Intent intent = getIntent();
         account = intent.getStringExtra("account");
-
+        user_name = intent.getStringExtra("user_name");
         getId();
         initNav();
         getBanner();
         initRec();
         initData();
         keepLongConnection(account);//Socket与服务器保持一个长连接
+
 
     }
 
@@ -109,25 +118,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         toolbar=findViewById(R.id.toolbar);
         recyclerView = findViewById(R.id.xrec);
         naview = findViewById(R.id.nav_list);
-        sendMsg = view_header.findViewById(R.id.button_sendmsg);
+        //sendMsg = view_header.findViewById(R.id.button_sendmsg);
         btn_myReleased = view_header.findViewById(R.id.btn_myreleased);
         btn_myReceived = view_header.findViewById(R.id.btn_myreceived);
         touxiang = findViewById(R.id.circle_touxiang);
-        sendMsg.setOnClickListener(this);
+        View headerLayout = naview.inflateHeaderView(R.layout.header_draw);
+        draw_name = headerLayout.findViewById(R.id.draw_name);
+        draw_touxiang = headerLayout.findViewById(R.id.draw_touxiang);
+        //sendMsg.setOnClickListener(this);
         btn_myReleased.setOnClickListener(this);
         btn_myReceived.setOnClickListener(this);
     }
     void initRec(){
         LinearLayoutManager xLinearLayoutManager = new LinearLayoutManager(MainActivity.this);
         xLinearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        recyclerView.setRefreshProgressStyle(ProgressStyle.BallRotate); //设定下拉刷新样式
+        recyclerView.setRefreshProgressStyle(ProgressStyle.BallScaleRippleMultiple); //设定下拉刷新样式
         recyclerView.setLoadingMoreProgressStyle(ProgressStyle.BallRotate);//设定上拉加载样式
         recyclerView.setLayoutManager(xLinearLayoutManager);
         xRecAdapter_task_taskhall = new xRecAdapter_task_taskhall(MainActivity.this,tasks);
         recyclerView.setAdapter(xRecAdapter_task_taskhall);
         //recyclerView.setNestedScrollingEnabled(false);
-        //recyclerView.setArrowImageView(R.drawable.qwe);     //设定下拉刷新显示图片（不必须）
+        //recyclerView.setArrowImageView(R.drawable.touxiang);     //设定下拉刷新显示图片（不必须）
         recyclerView.addHeaderView(Rel_header);
+        recyclerView.setPullRefreshEnabled(true);
+
         recyclerView.setLoadingListener(new XRecyclerView.LoadingListener() {
             //上拉加载监听
             @Override
@@ -149,6 +163,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //初始化侧拉界面
     private void initNav() {
         setSupportActionBar(toolbar);
+        draw_name.setText(user_name);
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final String touxiang_url = getTouxiangUrl(account);
+                Log.d("SSSSSSSSSS", touxiang_url);
+                final Bitmap im = getBitMBitmap(touxiang_url);
+
+                Log.d("SSSSSSSSS", touxiang_url);
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        touxiang.setImageBitmap(im);
+                        draw_touxiang.setImageBitmap(im);
+                    }
+                });
+            }
+        }).start();
+
         touxiang.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -157,6 +191,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 naview.setCheckedItem(R.id.relative);
             }
         });
+
+
+
+
 
         naview.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -243,6 +281,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         jsonObject.getString("time"),
                         jsonObject.getString("name_send"),
                         jsonObject.getString("name_received")
+
                 ));
 
             }
@@ -318,6 +357,39 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
     //得到任务列表
 
+    String getTouxiangUrl(String account){
+        String result = ""; //用来取得返回的String；
+        //发送post请求
+        HttpPost httpRequest = new HttpPost("http://132.232.93.93/bangbang/bangbang_getTouxiang_taskhall.php");
+        //Post运作传送变数必须用NameValuePair[]阵列储存
+        try {
+            //发出HTTP请求
+            Log.d("请求连接", "头像请求");
+            List params = new ArrayList();
+            params.add(new BasicNameValuePair("account", account));
+            httpRequest.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
+            //取得HTTP response
+            HttpResponse httpResponse = new DefaultHttpClient().execute(httpRequest);
+            //若状态码为200则请求成功，取到返回数据
+            Log.d("连接值", String.valueOf(httpResponse.getStatusLine().getStatusCode()));
+            if (httpResponse.getStatusLine().getStatusCode() == 200) {
+                //取出字符串
+                Log.d("请求连接", "连接成功");
+                result = new String(EntityUtils.toString(httpResponse.getEntity(),"utf8"));
+                Log.d("QQQQQQQ", result);
+            }
+        } catch (Exception e) {
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(MainActivity.this, "网络出错",Toast.LENGTH_SHORT).show();
+                }
+            });
+            e.printStackTrace();
+        }
+        return result;
+    }
+
     //Socket长连接
     void keepLongConnection(final String account){
 
@@ -328,11 +400,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 BufferedReader in = null;
                 String msg = "";
                 try {
-                    //socket = new Socket(InetAddress.getByName("132.232.93.93"), 6235);
                     socket = new Socket(InetAddress.getByName("132.232.93.93"), 6235);
-
-
-
                     //创建向服务器端发送信息的线程并启动
                     new ClientThread(socket,sendMsg,account).start();
                     in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -390,43 +458,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     //广告栏
     private void getBanner() {
-
         list_path = new ArrayList<>();
         list_title = new ArrayList<>();
-        list_path.add("http://132.232.93.93/bangbang/imgs/1.png");
-        list_path.add("http://132.232.93.93/bangbang/imgs/2.png");
-        list_path.add("http://132.232.93.93/bangbang/imgs/3.png");
-        list_path.add("http://132.232.93.93/bangbang/imgs/4.png");
-
-        list_title.add("好好学习");
-        list_title.add("天天向上");
-        list_title.add("热爱劳动");
-        list_title.add("不搞对象");
-
-
-        banner.setBannerStyle(BannerConfig.CIRCLE_INDICATOR_TITLE_INSIDE);
-        //设置图片加载器，图片加载器在下方
-        banner.setImageLoader(new GlideImageLoader());
-        //设置图片网址或地址的集合
-        banner.setImages(list_path);
-        //设置轮播的动画效果，内含多种特效，可点入方法内查找后内逐一体验
-        banner.setBannerAnimation(Transformer.FlipHorizontal);
-        //设置轮播图的标题集合
-        banner.setBannerTitles(list_title);
-        //设置轮播间隔时间
-        banner.setDelayTime(3000);
-        //设置是否为自动轮播，默认是“是”。
-        //banner.isAutoPlay(true);
-        //设置指示器的位置，小点点，左中右。
-        banner.setIndicatorGravity(BannerConfig.CIRCLE_INDICATOR).setOnBannerListener(this).start();
-                //以上内容都可写成链式布局，这是轮播图的监听。比较重要。方法在下面。
-                //必须最后调用的方法，启动轮播图。
+        list_path.add("http://132.232.93.93/bangbang/imgs/1.jpg");
+        list_path.add("http://132.232.93.93/bangbang/imgs/2.jpg");
+        list_path.add("http://132.232.93.93/bangbang/imgs/3.jpg");
+        list_path.add("http://132.232.93.93/bangbang/imgs/4.jpg");
+        banner.setBannerData(list_path).setSmoothInterval(1500).startSmoothAuto();
 
     }
-
-
-
-
     @Override
     public void OnBannerClick(int position) {
 
@@ -454,9 +494,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return super.onKeyDown(KeyCode,event);
     }
     //back键
-
 }
-
 
     class ClientThread extends Thread{
     String account;
